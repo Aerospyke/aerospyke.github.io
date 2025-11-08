@@ -1,0 +1,114 @@
+{{ $url := .Get "src" | default "/music/out_of_touch.mp3" }}
+{{ $id := printf "audio-%d" .Ordinal }}
+
+<div class="d-flex align-items-center justify-content-center gap-4 my-5">
+  <!-- Left Hamster -->
+  <img id="{{ $id }}-left-one" src="/images/hamster_static.png" alt="Hamster" class="hamster-gif">
+  <img id="{{ $id }}-left-two" src="/images/hamster_static.png" alt="Hamster" class="hamster-gif">
+  <img id="{{ $id }}-left-three" src="/images/hamster_static.png" alt="Hamster" class="hamster-gif">
+  <!-- Centered Player -->
+  <div class="text-center">
+    <button id="{{ $id }}-btn" class="btn btn-sm btn-primary px-4">Play</button>
+    <small id="{{ $id }}-status" class="text-muted d-block mt-2">Ready to dance</small>
+  </div>
+
+  <!-- Right Hamster -->
+  <img id="{{ $id }}-right-one" src="/images/hamster_static.png" alt="Hamster" class="hamster-gif">
+  <img id="{{ $id }}-right-two" src="/images/hamster_static.png" alt="Hamster" class="hamster-gif">
+  <img id="{{ $id }}-right-three" src="/images/hamster_static.png" alt="Hamster" class="hamster-gif">
+</div>
+
+<audio id="{{ $id }}-audio" preload="metadata" style="display: none;">
+  <source src="{{ $url }}" type="audio/mpeg">
+</audio>
+
+<script>
+(() => {
+  const btn = document.getElementById('{{ $id }}-btn');
+  const status = document.getElementById('{{ $id }}-status');
+  const audio = document.getElementById('{{ $id }}-audio');
+  const leftHamsterOne = document.getElementById('{{ $id }}-left-one');
+  const leftHamsterTwo = document.getElementById('{{ $id }}-left-two');
+  const leftHamsterThree = document.getElementById('{{ $id }}-left-three');
+
+  const rightHamsterOne = document.getElementById('{{ $id }}-right-one');
+  const rightHamsterTwo = document.getElementById('{{ $id }}-right-two');
+  const rightHamsterThree = document.getElementById('{{ $id }}-right-three');
+  const animatedSrc = '/images/hamster_dance.gif';
+  const staticSrc = '/images/hamster_static.png';
+
+  let isPlaying = false;
+
+  const dance = () => {
+      leftHamsterOne.src = animatedSrc;
+      leftHamsterTwo.src = animatedSrc;
+      leftHamsterThree.src = animatedSrc;
+
+      rightHamsterOne.src = animatedSrc;
+      rightHamsterTwo.src = animatedSrc;
+      rightHamsterThree.src = animatedSrc;
+  };
+
+  const stopDance = () => {
+      leftHamsterOne.src = staticSrc;
+      leftHamsterTwo.src = staticSrc;
+      leftHamsterThree.src = staticSrc;
+
+      rightHamsterOne.src = staticSrc;
+      rightHamsterTwo.src = staticSrc;
+      rightHamsterThree.src = staticSrc;
+  };
+
+  const toggle = () => {
+    if (isPlaying) {
+      audio.pause();
+      btn.textContent = 'Play';
+      status.textContent = 'Stopped. Click to dance!';
+      stopDance();
+      isPlaying = false;
+    } else {
+      audio.play();
+      btn.textContent = 'Stop';
+      status.textContent = 'Dancing...';
+      dance();
+      isPlaying = true;
+    }
+  };
+
+  audio.addEventListener('ended', () => {
+    btn.textContent = 'Play';
+    status.textContent = 'Finished. Click to dance again!';
+    stopDance();
+    isPlaying = false;
+  });
+
+  audio.addEventListener('pause', () => {
+    if (isPlaying) {
+      btn.textContent = 'Play';
+      status.textContent = 'Paused';
+      stopDance();
+      isPlaying = false;
+    }
+  });
+
+  btn.addEventListener('click', toggle);
+
+  // Initial styles
+  [leftHamsterOne, leftHamsterTwo,leftHamsterThree,rightHamsterOne,rightHamsterTwo,rightHamsterThree].forEach(h => {
+    h.style.imageRendering = 'pixelated';
+  });
+})();
+</script>
+
+<style>
+.hamster-gif {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+@media (max-width: 576px) {
+  .hamster-gif { width: 50px; height: 50px; }
+  .gap-4 { gap: 1rem !important; }
+}
+</style>

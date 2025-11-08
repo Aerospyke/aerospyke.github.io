@@ -1,0 +1,15 @@
+<!-- MIDI Libraries (with warning suppression) -->
+<script>
+  // Suppress the AudioContext warning before Tone loads
+  const OriginalAudioContext = window.AudioContext || window.webkitAudioContext;
+  window.AudioContext = function() {
+    const ctx = new OriginalAudioContext();
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});  // Silent resume attempt
+    }
+    return ctx;
+  };
+  window.AudioContext.prototype = OriginalAudioContext.prototype;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@2.1.4/build/Midi.min.js"></script>
