@@ -1,5 +1,5 @@
+title = 'SoL Tech Group Blog'
 baseURL = 'https://aerospyke.github.io'
 languageCode = 'en-us'
-title = 'SoL Tech Group Blog'
 theme = 'ananke'
 
